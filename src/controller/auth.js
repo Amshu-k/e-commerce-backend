@@ -2,6 +2,7 @@ const User = require('../models/user');
 var jwt = require('jsonwebtoken');
 
 exports.signup = (req, res) => {
+
     User.findOne({ email: req.body.email }).exec((err, user) => {
         if (err) {
             return res.status(500).json({
@@ -41,6 +42,9 @@ exports.signin = (req, res) => {
     User.findOne({ email: req.body.email }).exec((err, user) => {
         if (err) return res.status(400).json({ err: err });
         if (user) {
+            if (user.role !== 'user') {
+                return res.status(400).json({ err: 'This email is tied to an admin account. Please use the Admin Dashboard to login.' });
+            }
             if (user.authenticate(req.body.password)) {
                 const token = jwt.sign({ _id: user._id }, process.env.SECRET_KEY, { expiresIn: '1h' });
                 const { _id, firstName, lastName, email, role, fullName } = user;
