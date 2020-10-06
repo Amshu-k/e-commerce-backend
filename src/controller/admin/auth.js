@@ -47,7 +47,7 @@ exports.signin = (req, res) => {
         if (err) return res.status(400).json({ err: err });
         if (user) {
             if (user.authenticate(req.body.password) && user.role === 'admin') {
-                const token = jwt.sign({ _id: user._id }, process.env.SECRET_KEY, { expiresIn: '1h' });
+                const token = jwt.sign({ _id: user._id, role: user.role }, process.env.SECRET_KEY, { expiresIn: '1h' });
                 const { _id, firstName, lastName, email, role, fullName } = user;
                 res.status(200).json({
                     token,
@@ -63,10 +63,4 @@ exports.signin = (req, res) => {
 
     })
 
-}
-
-exports.requireSignIn = (req, res, next) => {
-    const decodedUser = jwt.verify(req.headers.authorization.split(' ')[1], process.env.SECRET_KEY);
-    req.user = decodedUser;
-    next();
 }

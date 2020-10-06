@@ -63,9 +63,3 @@ exports.signin = (req, res) => {
     })
 
 }
-
-exports.requireSignIn = (req, res, next) => {
-    const decodedUser = jwt.verify(req.headers.authorization.split(' ')[1], process.env.SECRET_KEY);
-    req.user = decodedUser;
-    next();
-}
