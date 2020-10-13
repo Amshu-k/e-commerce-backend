@@ -2,12 +2,13 @@ const Category = require('../models/category');
 const slugify = require('slugify');
 
 function createCategoriesRecursively(categories, parentId = null) {
-    const categoryList = [] 
+
+    const categoryList = []
     let category;
     if (parentId == null) {
-        category = categories.filter(category => category.parentId == undefined)
+        category = categories.filter(cat => cat.parentId == null)
     } else {
-        category = categories.filter(category => category.parentId === parentId)
+        category = categories.filter(cat => cat.parentId == parentId)
     }
     for (let c of category) {
         categoryList.push({
